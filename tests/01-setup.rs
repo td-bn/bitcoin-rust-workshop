@@ -1,10 +1,10 @@
 use bitcoincore_rpc::RpcApi;
-use rust_bitcoin_workshop::setup;
+use rust_bitcoin_workshop::BitcoinClient;
 
 fn main() {
-    let rpc = setup();
+    let client = BitcoinClient::new();
 
-    let version = rpc.version();
+    let version = client.version();
     assert!(version.is_ok());
 }
 
