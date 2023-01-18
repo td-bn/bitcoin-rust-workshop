@@ -10,4 +10,5 @@ fn tests() {
     t.pass("tests/02-wallet.rs");
     t.pass("tests/03-balance.rs");
     t.pass("tests/04-simple-transaction.rs");
+    t.pass("tests/05-utxos.rs");
 }

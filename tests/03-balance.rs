@@ -22,9 +22,11 @@
 //    Might be needed to generate a new address
 // 
 // While working on this, I noticed that there was an issue with generating 
-// blocks. My call always returned an Err variant. Not sure how to fix that. 
+// blocks. My call always returned an Err variant the first time round I was
+// trying to generate blocks. 
+// 
 // But luckily, the blocks get generated in the chain. So running the tests 
-// again works fine!
+// again works fine!!!
 
 use bitcoincore_rpc::RpcApi;
 use rust_bitcoin_workshop::*;
@@ -38,7 +40,6 @@ fn main() {
 
     client.get_dough_if_broke();
     let balance = client.get_balance(None, None).unwrap();
-    println!("Balance: {}", balance);
     assert!(balance.to_btc() > 0f64);
 }
 
