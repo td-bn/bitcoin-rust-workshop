@@ -1,4 +1,3 @@
-// Whew! Finally multi sig.
 // It took me a while to get this one working.
 //
 // Our aim is to create a transaction that creates a UTXO
@@ -52,6 +51,8 @@
 //    Capture result of create multi sig call
 //
 //  - https://docs.rs/bitcoincore-rpc/0.16.0/bitcoincore_rpc/trait.RpcApi.html#tymethod.call
+//    Note the rust rpc client does not have a function that makes this call, you can implement it
+//    for the client of use `call` method.
 //    Call method for the client for RPCs not covered by the Rust library
 //
 //  - https://docs.rs/bitcoincore-rpc-json/0.16.0/bitcoincore_rpc_json/struct.SignRawTransactionInput.html
@@ -67,12 +68,12 @@
 use std::ops::Sub;
 
 use bitcoincore_rpc::{bitcoin::Amount, Client, RpcApi};
-use rust_bitcoin_workshop::*;
+use bitcoin_basics::BitcoinClient;
 use secp256k1::{rand, KeyPair, Secp256k1};
 
 fn main() {
     let client = Client::setup();
-    let wallet_name = "test_wallet_5";
+    let wallet_name = "test_wallet";
     client.load_wallet_in_node(wallet_name);
 
     let secp = Secp256k1::new();
@@ -89,12 +90,16 @@ fn main() {
         .map(|k| k.public_key().to_string())
         .collect();
 
-    let secret_keys = &[keypairs[0].secret_key(), keypairs[2].secret_key()];
+    let signers = &[keypairs[0].secret_key(), keypairs[2].secret_key()];
+
+    // Create multi sig address and sent a transaction to it
     let (vout, value, txid, res) = client.multi_sig_tx(2, &pub_keys);
 
     let to = client.get_new_address(None, None).unwrap();
     let amount = Amount::from_sat(value).sub(Amount::from_sat(100_000));
-    client.spend_multisig(txid, vout, &to, amount, res, secret_keys);
+
+    // Spend the from multi sig address
+    client.spend_multisig(txid, vout, &to, amount, res, signers);
 
     let bal = client.get_received_by_address(&to, None).unwrap();
     assert_eq!(amount, bal);

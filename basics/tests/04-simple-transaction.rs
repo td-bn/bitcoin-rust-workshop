@@ -29,11 +29,11 @@
 //
 
 use bitcoincore_rpc::{Client, RpcApi};
-use rust_bitcoin_workshop::*;
+use bitcoin_basics::BitcoinClient;
 
 fn main() {
     let client = Client::setup();
-    let wallet_name = "test_wallet_5";
+    let wallet_name = "test_wallet";
     client.load_wallet_in_node(wallet_name);
     client.get_dough_if_broke();
     let address = client.get_new_address(None, None).unwrap();

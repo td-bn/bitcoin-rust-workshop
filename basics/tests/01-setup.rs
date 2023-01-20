@@ -28,7 +28,7 @@
 //
 
 use bitcoincore_rpc::{Client, RpcApi};
-use rust_bitcoin_workshop::BitcoinClient;
+use bitcoin_basics::BitcoinClient;
 
 fn main() {
     let client = Client::setup();

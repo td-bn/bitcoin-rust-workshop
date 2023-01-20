@@ -34,11 +34,11 @@
 //
 
 use bitcoincore_rpc::Client;
-use rust_bitcoin_workshop::*;
+use bitcoin_basics::BitcoinClient;
 
 fn main() {
     let client = Client::setup();
-    let wallet_name = "test_wallet_5";
+    let wallet_name = "test_wallet";
     let wallet_info = client.load_wallet_in_node(wallet_name);
 
     assert_eq!(wallet_name, wallet_info.wallet_name);

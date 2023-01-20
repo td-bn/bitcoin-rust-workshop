@@ -24,18 +24,15 @@
 //
 //  - https://docs.rs/bitcoin/latest/bitcoin/util/amount/struct.Amount.html
 //
-// NOTE: The assertion expects that you'll provide a fee of 100_000 sats in the
-// tx that you create.
-//
 
 use std::ops::Sub;
 
+use bitcoin_basics::BitcoinClient;
 use bitcoincore_rpc::{bitcoin::Amount, Client, RpcApi};
-use rust_bitcoin_workshop::*;
 
 fn main() {
     let client = Client::setup();
-    let wallet_name = "test_wallet_5";
+    let wallet_name = "test_wallet";
     client.load_wallet_in_node(wallet_name);
 
     let utxos = client
@@ -45,12 +42,11 @@ fn main() {
 
     let address = client.get_new_address(None, None).unwrap();
 
-    // TODO pass amount here so that tests is independent of implementation
-    client.transmit_raw_transaction(utxos.first().unwrap(), &address);
+    let utxo = utxos.first().unwrap();
+    // Set aside some fee
+    let amount = utxo.amount.sub(Amount::from_sat(100_000));
+    client.transmit_raw_transaction(utxos.first().unwrap(), &address, amount);
 
     let bal = client.get_received_by_address(&address, None).unwrap();
-    assert_eq!(
-        bal,
-        utxos.first().unwrap().amount.sub(Amount::from_sat(100_000))
-    );
+    assert_eq!(bal, amount);
 }
