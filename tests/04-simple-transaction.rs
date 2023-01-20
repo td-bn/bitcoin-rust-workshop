@@ -1,4 +1,4 @@
-// Send a simple payment to an address in our own wallet 
+// Send a simple payment to an address in our own wallet
 //
 // We add the following behaviour to our client.
 //
@@ -8,17 +8,17 @@
 //
 // We want this function to do the following things:
 //  - check to see if the Amount is okay
-//  - create a tx to send BTC to the given address 
-//  - mine a block to include this tx 
+//  - create a tx to send BTC to the given address
+//  - mine a block to include this tx
 //  - returns Txid of the transaction(might come in handy later)
-// 
+//
 // RESOURCES:
 //
 //  1.  https://developer.bitcoin.org/reference/rpc/sendtoaddress.html
 //      Send to address RPC API
 //
 //  2.  https://docs.rs/bitcoin/latest/bitcoin/util/amount/struct.Amount.html
-//      Docs for the Amount struct 
+//      Docs for the Amount struct
 //
 // Potential issues:
 //
@@ -28,7 +28,7 @@
 //      - https://bitcoin.stackexchange.com/questions/102508
 //
 
-use bitcoincore_rpc::{RpcApi, Client};
+use bitcoincore_rpc::{Client, RpcApi};
 use rust_bitcoin_workshop::*;
 
 fn main() {
@@ -42,4 +42,3 @@ fn main() {
     let amount = client.get_received_by_address(&address, None).unwrap();
     assert_eq!(amount.to_btc(), 1f64);
 }
-

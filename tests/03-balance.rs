@@ -1,5 +1,5 @@
 // C.R.E.A.M. Get the money https://www.youtube.com/watch?v=or5C2jV1qRc
-// 
+//
 // Its time to load our wallet with some BTC.
 // The way to get BTC in regtest environment is to mine blocks.
 //
@@ -14,21 +14,21 @@
 //
 //
 // RESOURCES:
-//  
+//
 //  - https://developer.bitcoin.org/reference/rpc/index.html#generating-rpcs
-//    Block generation reference 
-//  
+//    Block generation reference
+//
 //  - https://developer.bitcoin.org/reference/rpc/getnewaddress.html
 //    Might be needed to generate a new address
-// 
-// While working on this, I noticed that there was an issue with generating 
+//
+// While working on this, I noticed that there was an issue with generating
 // blocks. My call always returned an Err variant the first time round I was
-// trying to generate blocks. 
-// 
-// But luckily, the blocks get generated in the chain. So running the tests 
+// trying to generate blocks.
+//
+// But luckily, the blocks get generated in the chain. So running the tests
 // again works fine!!!
 
-use bitcoincore_rpc::{RpcApi, Client};
+use bitcoincore_rpc::{Client, RpcApi};
 use rust_bitcoin_workshop::*;
 
 fn main() {
@@ -42,4 +42,3 @@ fn main() {
     let balance = client.get_balance(None, None).unwrap();
     assert!(balance.to_btc() > 0f64);
 }
-

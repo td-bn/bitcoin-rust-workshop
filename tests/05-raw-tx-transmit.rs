@@ -15,7 +15,7 @@
 // RESOURCES:
 //
 //  - https://developer.bitcoin.org/reference/rpc/createrawtransaction.html
-//  
+//
 //  - https://developer.bitcoin.org/reference/rpc/signrawtransactionwithwallet.html
 //
 //  - https://developer.bitcoin.org/reference/rpc/sendrawtransaction.html
@@ -23,14 +23,14 @@
 //  - https://docs.rs/bitcoincore-rpc/0.16.0/bitcoincore_rpc/struct.Client.html#impl-RpcApi-for-Client
 //
 //  - https://docs.rs/bitcoin/latest/bitcoin/util/amount/struct.Amount.html
-// 
+//
 // NOTE: The assertion expects that you'll provide a fee of 100_000 sats in the
 // tx that you create.
 //
 
 use std::ops::Sub;
 
-use bitcoincore_rpc::{bitcoin::Amount, RpcApi, Client};
+use bitcoincore_rpc::{bitcoin::Amount, Client, RpcApi};
 use rust_bitcoin_workshop::*;
 
 fn main() {
