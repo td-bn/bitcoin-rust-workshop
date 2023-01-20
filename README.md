@@ -12,6 +12,9 @@ to solve the exercises depending on how much you already know.
 >NOTE: This is a WIP, currently containing only core RPCs and basic 
 transactions. I plan on adding exercises for some more advanced concepts. 
 
+**This workshop is inspired by [this great repo](https://github.com/dtolnay/proc-macro-workshop).**
+I found that exercises that build in this manner are great for learning.
+
 
 ## Workflow
 
@@ -26,22 +29,28 @@ Initially every projects starts with all of its tests disabled.
 Open up the project's tests/progress.rs file and enable tests one at a time 
 as you work through the implementation. 
 
+<img width="585" alt="image" src="https://user-images.githubusercontent.com/84708985/213715720-21452bb3-2542-483c-a08b-fe338f824db2.png">
+
 The test files (for example tests/01-setup.rs) each contain a comment 
 explaining what functionality is tested and giving some tips for how to 
 implement it. I recommend working through tests in numbered order, each time 
 enabling one more test and getting it passing before moving on.
 
+<img width="445" alt="image" src="https://user-images.githubusercontent.com/84708985/213716503-96827d9a-5be3-4f13-8f36-6927d9592b95.png">
+
 If a test fails, the test runner will surface the compiler error or 
 runtime error output.
+
+<img width="815" alt="image" src="https://user-images.githubusercontent.com/84708985/213716182-cf182f25-0d44-4b9c-a8c3-62818898cf3c.png">
+
 
 ## Debugging tips
 
 The errors give a lot of information about what might be going wrong, but 
-on rare occassion I had to  re-run the tests and restart the node to make the 
-issue go away.
+on rare occassion I had to re-run the tests and restart the node to make some 
+persistent issue go away.
 
 I've added tips where I faced issues while working through this myself.
-
 
 ## Contributing
 
