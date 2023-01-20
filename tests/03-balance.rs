@@ -3,13 +3,13 @@
 // Its time to load our wallet with some BTC.
 // The way to get BTC in regtest environment is to mine blocks.
 //
-//  impl BitcoinClient {
-//      pub fn get_dough_if_broke(&self) {..}
+//  pub trait BitcoinClient {
+//      fn get_dough_if_broke(&self);
 //  }
 //
 // The idea is to generate blocks and pass the block rewards to an address
-// in our loaded wallet. Make sure:
-//  - check balance 
+// in our loaded wallet. Make sure to:
+//  - check balance (don't want to be generating blocking everytime)
 //  - if no balance, generate blocks
 //
 //
@@ -28,13 +28,13 @@
 // But luckily, the blocks get generated in the chain. So running the tests 
 // again works fine!!!
 
-use bitcoincore_rpc::RpcApi;
+use bitcoincore_rpc::{RpcApi, Client};
 use rust_bitcoin_workshop::*;
 
 fn main() {
-    let client = BitcoinClient::new();
+    let client = Client::setup();
     let wallet_name = "test_wallet_5";
-    let wallet_info = client.load_wallet(wallet_name);
+    let wallet_info = client.load_wallet_in_node(wallet_name);
 
     assert_eq!(wallet_name, wallet_info.wallet_name);
 

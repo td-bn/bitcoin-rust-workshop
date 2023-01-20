@@ -1,36 +1,20 @@
 // Whew! Finally multi sig.
-// It took me a while to get this one working myself.
+// It took me a while to get this one working.
 //
 // Our aim is to create a transaction that creates a UTXO
 // that can only be unlocked using multisig. Then we'll
 // spend that UTXO by signing with the threshold amount of 
 // keys.
 //
-//  struct BitcoinClient {
+//  pub trait BitcoinClient {
 //
-//      This function creates a multi sig address, and sends 
-//      some bitcoin to the created address. It returns the relevant
-//      details needed to spend listed below.
-//
-//      The function take: n, signatures threshold, and a vector
-//      of pubkeys.
-//
-//      It returns (vout, value, Txid, AddMultiSigAddressResult)
-//          vout: index of UTXO in the tx outputs
-//          value: value locked in UTXO
-//          txid: txid of transaction that includes this UTXO
-//          AddMultiSigAddressResult: Data related to multisig(see docs) 
-//      pub fn multi_sig_tx(
+//      fn multi_sig_tx(
 //          &self,
 //          n: usize,
 //          pubkeys: &Vec<String>,
-//      ) -> (u64, u64, Txid, AddMultiSigAddressResult) {..}
+//      ) -> (u64, u64, Txid, AddMultiSigAddressResult);
 //
-//
-//      The next function takes this info and spends in by creating 
-//      a raw transaction and signing it with the secret keys.
-//
-//      pub fn spend_multisig(
+//      fn spend_multisig(
 //          &self,
 //          txid: Txid,
 //          vout: u64,
@@ -38,8 +22,27 @@
 //          amount: Amount,
 //          res: AddMultiSigAddressResult,
 //          secret_keys: &[SecretKey],
-//      ) {..}
+//      );
 //  }
+//
+//  The function `multi_sig_tx`:
+//      creates a multi sig address, 
+//      sends some bitcoin to the created address,
+//      returns the relevant details needed to spend listed below.
+//
+//  The function takes: 
+//      n, signatures threshold, and a vector of pubkeys.
+//
+//  It returns (vout, value, Txid, AddMultiSigAddressResult)
+//      vout: index of UTXO in the tx outputs
+//      value: value locked in UTXO
+//      txid: txid of transaction that includes this UTXO
+//      AddMultiSigAddressResult: Data related to multisig(see docs) 
+//
+//
+//  The function `spend_multisig` takes above info and spends it by creating 
+//  a raw transaction and signing it with the secret keys.
+//
 //
 // RESOURCES:
 //
@@ -63,14 +66,14 @@
 //
 use std::ops::Sub;
 
-use bitcoincore_rpc::{bitcoin::Amount, RpcApi};
+use bitcoincore_rpc::{bitcoin::Amount, RpcApi, Client};
 use secp256k1::{rand, KeyPair, Secp256k1};
 use rust_bitcoin_workshop::*;
 
 fn main() {
-    let client = BitcoinClient::new();
+    let client = Client::setup();
     let wallet_name = "test_wallet_5";
-    client.load_wallet(wallet_name);
+    client.load_wallet_in_node(wallet_name);
 
     let secp = Secp256k1::new();
 

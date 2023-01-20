@@ -1,13 +1,16 @@
 // Send a simple payment to an address in our own wallet 
 //
-//  impl BitcoinClient {
-//      pub fn transfer(&self, address: &Address, amount: f64) {..}
+// We add the following behaviour to our client.
+//
+//  pub trait BitcoinClient {
+//      fn transfer(&self, address: &Address, amount: f64) -> Txid;
 //  }
 //
 // We want this function to do the following things:
 //  - check to see if the Amount is okay
 //  - create a tx to send BTC to the given address 
-//  - mine a block to mine this tx 
+//  - mine a block to include this tx 
+//  - returns Txid of the transaction(might come in handy later)
 // 
 // RESOURCES:
 //
@@ -18,18 +21,20 @@
 //      Docs for the Amount struct 
 //
 // Potential issues:
+//
 //      - one of the issues might be that the client is not able to estimate the fee
 //      for the tx, this is because the mempool is empty
+//
 //      - https://bitcoin.stackexchange.com/questions/102508
 //
 
-use bitcoincore_rpc::RpcApi;
+use bitcoincore_rpc::{RpcApi, Client};
 use rust_bitcoin_workshop::*;
 
 fn main() {
-    let client = BitcoinClient::new();
+    let client = Client::setup();
     let wallet_name = "test_wallet_5";
-    client.load_wallet(wallet_name);
+    client.load_wallet_in_node(wallet_name);
     client.get_dough_if_broke();
     let address = client.get_new_address(None, None).unwrap();
     client.transfer(&address, 1f64);
