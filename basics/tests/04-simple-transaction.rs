@@ -23,9 +23,8 @@
 // Potential issues:
 //
 //      - one of the issues might be that the client is not able to estimate the fee
-//      for the tx, this is because the mempool is empty
-//
-//      - https://bitcoin.stackexchange.com/questions/102508
+//      for the tx
+//         - See: https://bitcoin.stackexchange.com/questions/102508
 //
 // Extra Reading:
 // - https://github.com/bitcoinbook/bitcoinbook/blob/develop/ch06.asciidoc
@@ -39,9 +38,11 @@ fn main() {
     let wallet_name = "test_wallet";
     client.load_wallet_in_node(wallet_name);
     client.get_dough_if_broke();
+
     let address = client.get_new_address(None, None).unwrap();
     client.transfer(&address, 1f64);
 
     let amount = client.get_received_by_address(&address, None).unwrap();
     assert_eq!(amount.to_btc(), 1f64);
 }
+

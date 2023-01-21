@@ -35,16 +35,17 @@ fn main() {
     let wallet_name = "test_wallet";
     client.load_wallet_in_node(wallet_name);
 
+    // Get spendable utxo
     let utxos = client
         .list_unspent(Some(1), None, None, None, None)
         .unwrap();
     assert!(utxos.len() > 0);
-
-    let address = client.get_new_address(None, None).unwrap();
-
     let utxo = utxos.first().unwrap();
     // Set aside some fee
     let amount = utxo.amount.sub(Amount::from_sat(100_000));
+
+
+    let address = client.get_new_address(None, None).unwrap();
     client.transmit_raw_transaction(utxos.first().unwrap(), &address, amount);
 
     let bal = client.get_received_by_address(&address, None).unwrap();

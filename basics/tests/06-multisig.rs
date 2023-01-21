@@ -68,13 +68,14 @@
 // 
 // Extra Reading:
 // - https://github.com/bitcoinbook/bitcoinbook/blob/develop/ch07.asciidoc#multisignature
+// - https://github.com/bitcoinbook/bitcoinbook/blob/develop/ch06.asciidoc
 //
 
 use std::ops::Sub;
 
 use bitcoincore_rpc::{bitcoin::Amount, Client, RpcApi};
 use bitcoin_basics::BitcoinClient;
-use secp256k1::{rand, KeyPair, Secp256k1};
+use secp256k1::{rand, Secp256k1};
 
 fn main() {
     let client = Client::setup();
@@ -83,21 +84,19 @@ fn main() {
 
     let secp = Secp256k1::new();
 
-    let keypairs: Vec<_> = (1..=3)
-        .into_iter()
-        .map(|_| {
-            let (secret_key, _) = secp.generate_keypair(&mut rand::thread_rng());
-            KeyPair::from_secret_key(&secp, &secret_key)
-        })
-        .collect();
-    let pub_keys = keypairs
-        .iter()
-        .map(|k| k.public_key().to_string())
-        .collect();
+    // Generate 3 keypairs
+    let mut pub_keys = vec![];
+    let mut secrets = vec![];
+    for _ in 1..=3 {
+        let (secret_key, pk) = secp.generate_keypair(&mut rand::thread_rng());
+        pub_keys.push(pk.to_string());
+        secrets.push(secret_key);
+    }
 
-    let signers = &[keypairs[0].secret_key(), keypairs[2].secret_key()];
+    // 2 of 3 signers
+    let signers = &[secrets[0], secrets[2]];
 
-    // Create multi sig address and sent a transaction to it
+    // Create 2/3 multi sig address and sent a transaction to it
     let (vout, value, txid, res) = client.multi_sig_tx(2, &pub_keys);
 
     let to = client.get_new_address(None, None).unwrap();
