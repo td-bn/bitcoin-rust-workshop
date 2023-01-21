@@ -65,6 +65,11 @@
 //  - https://developer.bitcoin.org/reference/rpc/sendrawtransaction.html
 //  - https://docs.rs/bitcoin/latest/bitcoin/util/amount/struct.Amount.html
 //
+// 
+// Extra Reading:
+// - https://github.com/bitcoinbook/bitcoinbook/blob/develop/ch07.asciidoc#multisignature
+//
+
 use std::ops::Sub;
 
 use bitcoincore_rpc::{bitcoin::Amount, Client, RpcApi};

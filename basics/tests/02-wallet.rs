@@ -32,6 +32,10 @@
 //  2.  https://stackoverflow.com/questions/64324893
 //      For loading a wallet with a given name.
 //
+// Extra Reading:
+//  - https://github.com/bitcoinbook/bitcoinbook/blob/develop/ch04.asciidoc
+//  - https://github.com/bitcoinbook/bitcoinbook/blob/develop/ch05.asciidoc
+//
 
 use bitcoincore_rpc::Client;
 use bitcoin_basics::BitcoinClient;

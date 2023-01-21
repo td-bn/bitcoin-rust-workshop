@@ -27,6 +27,9 @@
 //
 //      - https://bitcoin.stackexchange.com/questions/102508
 //
+// Extra Reading:
+// - https://github.com/bitcoinbook/bitcoinbook/blob/develop/ch06.asciidoc
+//
 
 use bitcoincore_rpc::{Client, RpcApi};
 use bitcoin_basics::BitcoinClient;

@@ -26,6 +26,9 @@
 //      Repository for the Rust client library. See docs for the crate for
 //      more information.
 //
+// Extra Reading:
+//  - https://github.com/bitcoinbook/bitcoinbook/blob/develop/ch03.asciidoc
+//
 
 use bitcoincore_rpc::{Client, RpcApi};
 use bitcoin_basics::BitcoinClient;

@@ -27,6 +27,9 @@
 //
 // But luckily, the blocks get generated in the chain. So running the tests
 // again works fine!!!
+// 
+// Extra Reading:
+// - https://github.com/bitcoinbook/bitcoinbook/blob/develop/ch10.asciidoc
 
 use bitcoincore_rpc::{Client, RpcApi};
 use bitcoin_basics::BitcoinClient;
