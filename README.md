@@ -1,4 +1,4 @@
-# [WIP] Rust Bitcoin Workshop
+# Rust Bitcoin Workshop
 
 This repo contains a set of exercises that will help the solver gain a better
 understanding of Bitcoin core RPCs. It also helps the user gain some
@@ -10,7 +10,7 @@ understanding of how things work under the hood. It might/might not be needed
 to solve the exercises depending on how much you already know.
 
 >NOTE: This is a WIP, currently containing only core RPCs and basic 
-transactions. I plan on adding exercises for some more advanced concepts. 
+transactions. I plan on adding exercises for some more concepts that'll aid understanding of Bitcoin technicals. 
 
 **This workshop is inspired by [this great repo](https://github.com/dtolnay/proc-macro-workshop).**
 I found that exercises that build in this manner are great for learning.
