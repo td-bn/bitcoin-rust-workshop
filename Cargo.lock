@@ -140,6 +140,26 @@ dependencies = [
 ]
 
 [[package]]
+name = "miniscript"
+version = "9.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "123a10aae81d0712ecc09b780f6f0ae0b0f506a5c4c912974725760d59ba073e"
+dependencies = [
+ "bitcoin",
+]
+
+[[package]]
+name = "miniscript_workshop"
+version = "0.0.0"
+dependencies = [
+ "bitcoin_basics",
+ "bitcoincore-rpc",
+ "miniscript",
+ "secp256k1",
+ "trybuild",
+]
+
+[[package]]
 name = "once_cell"
 version = "1.17.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -204,6 +224,7 @@ name = "rust-bitcoin-workshop"
 version = "0.0.0"
 dependencies = [
  "bitcoin_basics",
+ "miniscript_workshop",
 ]
 
 [[package]]
