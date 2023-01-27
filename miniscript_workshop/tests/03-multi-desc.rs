@@ -1,3 +1,14 @@
+// Creating a descriptor.
+//
+// Create a multi sig descriptor to pass the test.
+//
+//  impl MiniscriptClient for Client {
+//     fn multisig_desc(&self, n: usize, pubkeys: &[String]) -> Descriptor<DefiniteDescriptorKey>;
+//  }
+//
+//  Takes in n, the number of confirmations and a list of pubkeys and returns a 
+//  descriptor describing the n of m multisig.
+
 use bitcoincore_rpc::{Client, bitcoin};
 use miniscript_workshop::MiniscriptClient;
 use secp256k1::{rand, Secp256k1};
@@ -8,11 +19,9 @@ fn main() {
     // Generate keypairs
     let secp = Secp256k1::new();
     let mut pubkeys = vec![];
-    let mut secrets = vec![];
     for _ in 0..3 {
-        let (secret_key, pub_key) = secp.generate_keypair(&mut rand::thread_rng());
+        let (_, pub_key) = secp.generate_keypair(&mut rand::thread_rng());
         pubkeys.push(pub_key.to_string());
-        secrets.push(secret_key);
     }
 
     // Create descriptors
