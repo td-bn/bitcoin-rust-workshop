@@ -1,18 +1,20 @@
 // Now that we have a client set up with a wallet and some BTC,
 // lets use descriptors to send a P2PKH transaction.
 //
-// For this exercise we'll write a function that takes in some
-// arguments and does the following things:
+// For this exercise we'll write a functions that do the following things:
 //  - Creates a partially signed bitcoin transaction(PSBT)
 //  - Adds inputs and outputs to the PSBT
-//  - signs the PSBT
-//  - finalizes the PSBT, and creates a raw tx
+//  - signs, finalizes the PSBT, and creates a raw tx
 //  - mines a block
 //
-// The function will TxOut will contain the output of the raw
-// transaction.
 //
 //  impl MiniscriptClient {
+//     // This function sends a raw tx and mines a block
+//     fn sendrawtx(&self, tx: Transaction);
+//
+//
+//     // The function will take a TxOut that will contain the output of the raw
+//     // transaction.
 //     fn pkh(
 //         &self,
 //         txid: Txid,
@@ -21,14 +23,34 @@
 //         secret_key: secp256k1::SecretKey,
 //         pub_key: secp256k1::PublicKey
 //     );
+//      Use of args:
+//       txid: get deatils for UTXO
+//       desc: for using with PSBT extentions provided by miniscript 
+//       txout: txout for the raw tx
+//       secret_key: for signing
+//       pub_key: for adding partial sig
 //  }
 //
-// Use of args:
-//  txid: get deatils for UTXO
-//  desc: for using with PSBT extentions provided by miniscript 
-//  txout: txout for the raw tx
-//  secret_key: for signing
-//  pub_key: for adding partial sig
+// It might make sense to create some helper functions that will come in handy later:
+//
+//  // Creates a new PSBT
+//  - fn psbt_new() -> PartiallySignedTransaction {..}
+//
+//  // Updates PSBT with spending info
+//  - fn update_psbt(
+//      psbt: &mut PartiallySignedTransaction,
+//      outp: OutPoint, // OutPoint for tx input
+//      output: TxOut,  // Txout to create
+//      desc: &Descriptor<DefiniteDescriptorKey>,
+//      txout: TxOut // Txout to spend  
+//    ) {..}
+//
+//  // Signs and finializes the PBST with the given signers
+//  - fn sign_and_finalize(
+//        psbt: &mut PartiallySignedTransaction,
+//        secrets: &[SecretKey],
+//        pubkeys: &[PublicKey],
+//    ) -> Transaction {..}
 //
 // RESOURCES:
 //
