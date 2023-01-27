@@ -7,6 +7,7 @@
 fn tests() {
     let t = trybuild::TestCases::new();
     // t.pass("tests/01-configure.rs");
-    // t.pass("tests/02-pkh.rs");
+    t.pass("tests/02-pkh.rs");
     t.pass("tests/03-multi-desc.rs");
+    t.pass("tests/04-multi-spend.rs");
 }

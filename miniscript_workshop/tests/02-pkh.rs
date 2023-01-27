@@ -116,7 +116,7 @@ fn main() {
     };
 
     // Act
-    client.pkh(txid, desc, txout, secret_key, pub_key);
+    client.spend_pkh(txid, desc, txout, secret_key, pub_key);
 
     // Assert
     let bal = client.get_received_by_address(&recv_addr, Some(1)).unwrap();
