@@ -90,6 +90,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 
 [[package]]
+name = "clightningrpc"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "98ae583d1efb5a0cb21d77ef53f872f104c872b5e05cc150b277d15afe13e974"
+dependencies = [
+ "serde",
+ "serde_derive",
+ "serde_json",
+]
+
+[[package]]
 name = "getrandom"
 version = "0.2.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -129,6 +140,16 @@ name = "libc"
 version = "0.2.139"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "201de327520df007757c1f0adce6e827fe8562fbc28bfd9c15571c66ca1f5f79"
+
+[[package]]
+name = "ln_workshop"
+version = "0.0.0"
+dependencies = [
+ "bitcoincore-rpc",
+ "clightningrpc",
+ "secp256k1",
+ "trybuild",
+]
 
 [[package]]
 name = "log"
@@ -224,6 +245,7 @@ name = "rust-bitcoin-workshop"
 version = "0.0.0"
 dependencies = [
  "bitcoin_basics",
+ "ln_workshop",
  "miniscript_workshop",
 ]
 
