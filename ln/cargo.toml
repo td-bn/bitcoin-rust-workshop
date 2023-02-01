@@ -1,0 +1,19 @@
+[package]
+name = "ln_workshop"
+version = "0.0.0"
+autotests = false
+edition = "2021"
+publish = false
+
+[[test]]
+name = "tests"
+path = "tests/progress.rs"
+
+[dev-dependencies]
+trybuild = "1.0"
+
+[dependencies]
+bitcoincore-rpc = "0.16.0"
+secp256k1 = { version="0.24.1", features=["rand-std"] }
+clightningrpc = "0.2.0"
+
