@@ -1,0 +1,15 @@
+#config c-lightning
+network=regtest
+alias=NODE_ONE
+rgb=03ad98
+
+#Config node testnet
+bind-addr=127.0.0.1:19735
+
+#config bitcoin core
+bitcoin-rpcuser=user
+bitcoin-rpcpassword=userBTCNode@123
+bitcoin-rpcport=18443
+log-level=debug
+
+allow-deprecated-apis=false
