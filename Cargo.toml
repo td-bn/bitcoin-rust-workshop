@@ -14,4 +14,4 @@ path = "main.rs"
 bitcoin_basics = { path = "basics"}
 miniscript_workshop = { path = "miniscript_workshop"}
 ln_workshop = { path = "ln"}
-
+ln_node = { path = "rln-node"}
