@@ -1,9 +1,9 @@
-use bitcoincore_rpc::{Client, RpcApi};
 use bitcoin_basics::BitcoinClient;
+use bitcoincore_rpc::{bitcoin::BlockHash, Client, RpcApi};
 use lightning::chain::chaininterface::{BroadcasterInterface, FeeEstimator};
 
 pub struct BitcoindClient {
-    client: Client
+    client: Client,
 }
 
 impl BitcoindClient {
@@ -11,9 +11,20 @@ impl BitcoindClient {
         let client = Client::setup();
         client.load_wallet_in_node("test_wallet");
         client.get_dough_if_broke();
-        Self {
-            client
-        }
+        Self { client }
+    }
+
+    pub fn get_best_blockhash(&self) -> BlockHash {
+        self.client
+            .get_best_block_hash()
+            .expect("Failed to get latest blockhash")
+    }
+
+    pub fn get_block_height(&self, blockhash: &BlockHash) -> usize {
+        self.client
+            .get_block_info(&blockhash)
+            .expect("Failed to get height of blockhash")
+            .height
     }
 }
 
@@ -29,7 +40,8 @@ impl FeeEstimator for BitcoindClient {
 
 impl BroadcasterInterface for BitcoindClient {
     fn broadcast_transaction(&self, tx: &bitcoincore_rpc::bitcoin::Transaction) {
-        self.client.send_raw_transaction(tx).expect("Failed to send raw tx");
+        self.client
+            .send_raw_transaction(tx)
+            .expect("Failed to send raw tx");
     }
 }
-
