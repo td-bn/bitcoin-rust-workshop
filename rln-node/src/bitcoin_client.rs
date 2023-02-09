@@ -1,6 +1,10 @@
 use bitcoin_basics::BitcoinClient;
-use bitcoincore_rpc::{bitcoin::BlockHash, Client, RpcApi};
+use bitcoincore_rpc::{
+    bitcoin::{util::uint::Uint256, BlockHash},
+    Client, RpcApi,
+};
 use lightning::chain::chaininterface::{BroadcasterInterface, FeeEstimator};
+use lightning_block_sync::{BlockData, BlockHeaderData, BlockSource};
 
 pub struct BitcoindClient {
     client: Client,
@@ -43,5 +47,55 @@ impl BroadcasterInterface for BitcoindClient {
         self.client
             .send_raw_transaction(tx)
             .expect("Failed to send raw tx");
+    }
+}
+
+impl BlockSource for BitcoindClient {
+    fn get_block<'a>(
+        &'a self,
+        header_hash: &'a BlockHash,
+    ) -> lightning_block_sync::AsyncBlockSourceResult<'a, lightning_block_sync::BlockData> {
+        let block = self
+            .client
+            .get_block(header_hash)
+            .expect("Failed to get block");
+        Box::pin(async move { Ok(BlockData::FullBlock(block)) })
+    }
+
+    fn get_header<'a>(
+        &'a self,
+        header_hash: &'a BlockHash,
+        _height_hint: Option<u32>,
+    ) -> lightning_block_sync::AsyncBlockSourceResult<'a, lightning_block_sync::BlockHeaderData>
+    {
+        let header = self
+            .client
+            .get_block_header(header_hash)
+            .expect("Failed to get header");
+        let info = self
+            .client
+            .get_block_header_info(header_hash)
+            .expect("Failed to get header info");
+        let mut chainw = [0 as u8; 32];
+        for (i, v) in info.chainwork .iter() .enumerate() {
+            chainw[i] = *v;
+        }
+        Box::pin(async move {
+            Ok(BlockHeaderData {
+                header,
+                height: info.height as u32,
+                chainwork: Uint256::from_be_bytes(chainw),
+            })
+        })
+    }
+
+    fn get_best_block<'a>(
+        &'a self,
+    ) -> lightning_block_sync::AsyncBlockSourceResult<(BlockHash, Option<u32>)> {
+        let hash = self.get_best_blockhash();
+        let height = self.get_block_height(&hash) as u32;
+        Box::pin(async move {
+            Ok((hash, Some(height)))
+        })
     }
 }

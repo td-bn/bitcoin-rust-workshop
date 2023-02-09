@@ -1,14 +1,17 @@
 use lightning::chain::chainmonitor::ChainMonitor;
 use lightning::chain::keysinterface::InMemorySigner;
-use lightning::chain::{BestBlock, Filter};
+use lightning::chain::{self, BestBlock, Filter};
 use lightning::ln::channelmanager::{ChainParameters, ChannelManager};
 use lightning::util::config::UserConfig;
+use lightning_block_sync::init::synchronize_listeners;
+use lightning_block_sync::UnboundedCache;
 use lightning_persister::FilesystemPersister;
 use rlnnode::bitcoin_client::BitcoindClient;
 use rlnnode::keys_manager::get_keys_manager;
 use rlnnode::logger::RLNLogger;
 
-fn main() {
+#[tokio::main]
+async fn main() {
     let ln_dir = "./node_1";
     let bitcoind_client = BitcoindClient::new();
     let logger = RLNLogger;
@@ -29,7 +32,7 @@ fn main() {
     let _channel_monitors = persister.read_channelmonitors(&keys_manager).unwrap();
 
     // Create channel manager
-    let (_channel_manager_blockhash, mut _channel_manager) = {
+    let (channel_manager_blockhash, channel_manager) = {
         let best_blockhash = bitcoind_client.get_best_blockhash();
         let height = bitcoind_client.get_block_height(&best_blockhash);
 
@@ -51,4 +54,21 @@ fn main() {
             ),
         )
     };
+
+    // Chain tip
+    let mut cache = UnboundedCache::new();
+    let chain_listeners = vec![(
+        channel_manager_blockhash,
+        &channel_manager as &dyn chain::Listen,
+    )];
+    let mut _chain_tip = Some(
+        synchronize_listeners(
+            &bitcoind_client,
+            bitcoincore_rpc::bitcoin::Network::Regtest,
+            &mut cache,
+            chain_listeners,
+        )
+        .await
+        .unwrap(),
+    );
 }
