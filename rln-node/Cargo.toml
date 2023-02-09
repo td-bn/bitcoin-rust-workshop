@@ -14,5 +14,9 @@ lightning = "0.0.113"
 time = {version = "0.3", features = ["formatting"]}
 bitcoincore-rpc = {version = "0.16.0"}
 lightning-persister = {version = "0.0.113"}
+lightning-block-sync = {version = "0.0.113"}
+
+tokio = { version = "1", features = [ "io-util", "macros", "rt", "rt-multi-thread", "sync", "net", "time" ] }
+
 
 bitcoin_basics = { path = "../basics" }

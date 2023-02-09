@@ -1,1 +1,7 @@
 /target
+
+ln/ln-nodes/*
+!ln/ln-nodes/node-1/config
+!ln/ln-nodes/node-2/config
+
+rln-node/node_1
