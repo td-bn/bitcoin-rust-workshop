@@ -1,5 +1,5 @@
-use std::sync::Arc;
-use std::time::SystemTime;
+use std::sync::{Arc, Mutex};
+use std::time::{Duration, SystemTime};
 
 use bitcoincore_rpc::bitcoin::blockdata::constants::genesis_block;
 use bitcoincore_rpc::bitcoin::secp256k1::rand::{thread_rng, RngCore};
@@ -11,12 +11,17 @@ use lightning::ln::channelmanager::{ChainParameters, SimpleArcChannelManager};
 use lightning::ln::peer_handler::{IgnoringMessageHandler, MessageHandler, SimpleArcPeerManager};
 use lightning::onion_message::OnionMessenger;
 use lightning::routing::gossip::{NetworkGraph, P2PGossipSync};
+use lightning::routing::router::DefaultRouter;
+use lightning::routing::scoring::{ProbabilisticScorer, ProbabilisticScoringParameters};
 use lightning::util::config::UserConfig;
+use lightning::util::events::Event;
 use lightning_block_sync::init::synchronize_listeners;
-use lightning_block_sync::UnboundedCache;
+use lightning_block_sync::{poll, SpvClient, UnboundedCache};
+use lightning_invoice::payment::{self, InvoicePayer};
 use lightning_net_tokio::SocketDescriptor;
 use lightning_persister::FilesystemPersister;
 use rlnnode::bitcoin_client::BitcoindClient;
+use rlnnode::event_handler::handle_ldk_event;
 use rlnnode::keys_manager::get_keys_manager;
 use rlnnode::logger::RLNLogger;
 
@@ -91,9 +96,9 @@ async fn main() {
         channel_manager_blockhash,
         &channel_manager as &dyn chain::Listen,
     )];
-    let mut _chain_tip = Some(
+    let chain_tip = Some(
         synchronize_listeners(
-            bitcoind_client,
+            bitcoind_client.clone(),
             bitcoincore_rpc::bitcoin::Network::Regtest,
             &mut cache,
             chain_listeners,
@@ -132,19 +137,76 @@ async fn main() {
         onion_message_handler: onion_messenger.clone(),
     };
 
-    let _peer_manager: SimpleArcPeerManager<
-        SocketDescriptor,
-        ChainMonitor,
-        BitcoindClient,
-        BitcoindClient,
-        dyn chain::Access + Send + Sync,
-        RLNLogger,
-    > = PeerManager::new(
+    let peer_manager: Arc<PeerManager> = Arc::new(PeerManager::new(
         ln_message_handler,
         keys_manager.get_node_secret(Recipient::Node).unwrap(),
         current_time.try_into().unwrap(),
         &epheremal_bytes,
         logger.clone(),
         IgnoringMessageHandler {},
+    ));
+
+    // Initialize network
+    let listen_port = 9735;
+    let listener = tokio::net::TcpListener::bind(format!("0.0.0.0:{}", listen_port))
+        .await
+        .unwrap();
+    tokio::spawn(async move {
+        loop {
+            let peer_manager_connection = peer_manager.clone();
+            let tcp_stream = listener.accept().await.unwrap().0;
+            tokio::spawn(async move {
+                lightning_net_tokio::setup_inbound(
+                    peer_manager_connection,
+                    tcp_stream.into_std().unwrap(),
+                )
+                .await
+            });
+        }
+    });
+
+    // Keeping LKD up to date
+    let channel_manager_spv = channel_manager.clone();
+    tokio::spawn(async move {
+        let chain_poller = poll::ChainPoller::new(bitcoind_client.clone(), Network::Regtest);
+        let chain_listener = (chain_monitor.clone(), channel_manager_spv);
+        let mut spv_client = SpvClient::new(
+            chain_tip.unwrap(),
+            chain_poller,
+            &mut cache,
+            &chain_listener,
+        );
+        loop {
+            spv_client.poll_best_tip().await.unwrap();
+            tokio::time::sleep(Duration::from_secs(1)).await;
+        }
+    });
+
+    // LDK event handler
+    let event_handler = move |event: Event| {
+        handle_ldk_event(event);
+    };
+
+    // Prob. scorer
+    let scorer_params = ProbabilisticScoringParameters::default();
+    let scorer = Arc::new(Mutex::new(ProbabilisticScorer::new(
+        scorer_params,
+        network_graph.clone(),
+        logger.clone(),
+    )));
+
+    // 	InvoicePayer
+    let router = DefaultRouter::new(
+        network_graph.clone(),
+        logger.clone(),
+        keys_manager.get_secure_random_bytes(),
+        scorer.clone(),
     );
+    let _invoice_payer = Arc::new(InvoicePayer::new(
+        channel_manager.clone(),
+        router,
+        logger.clone(),
+        event_handler,
+        payment::Retry::Timeout(Duration::from_secs(5)),
+    ));
 }
