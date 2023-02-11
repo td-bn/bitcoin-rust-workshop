@@ -219,6 +219,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "lightning-background-processor"
+version = "0.0.113"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2288d211a2ab15e2c9fb492fb99c7998df1a37f228552f703824ee678b8980c9"
+dependencies = [
+ "bitcoin",
+ "lightning",
+ "lightning-rapid-gossip-sync",
+]
+
+[[package]]
 name = "lightning-block-sync"
 version = "0.0.113"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -227,6 +238,19 @@ dependencies = [
  "bitcoin",
  "futures-util",
  "lightning",
+]
+
+[[package]]
+name = "lightning-invoice"
+version = "0.21.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e9680857590c3529cf8c7d32b04501f215f2bf1e029fdfa22f4112f66c1741e4"
+dependencies = [
+ "bech32",
+ "bitcoin_hashes",
+ "lightning",
+ "num-traits",
+ "secp256k1",
 ]
 
 [[package]]
@@ -253,13 +277,25 @@ dependencies = [
 ]
 
 [[package]]
+name = "lightning-rapid-gossip-sync"
+version = "0.0.113"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "488b68c7d24093d35a83f37c560e427f1085f4c5d37918b81b11d95cd3675a0f"
+dependencies = [
+ "bitcoin",
+ "lightning",
+]
+
+[[package]]
 name = "ln_node"
 version = "0.1.0"
 dependencies = [
  "bitcoin_basics",
  "bitcoincore-rpc",
  "lightning",
+ "lightning-background-processor",
  "lightning-block-sync",
+ "lightning-invoice",
  "lightning-net-tokio",
  "lightning-persister",
  "time",
@@ -322,6 +358,15 @@ dependencies = [
  "log",
  "wasi",
  "windows-sys",
+]
+
+[[package]]
+name = "num-traits"
+version = "0.2.15"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "578ede34cf02f8924ab9447f50c28075b4d3e5b269972345e7e0372b38c6cdcd"
+dependencies = [
+ "autocfg",
 ]
 
 [[package]]
