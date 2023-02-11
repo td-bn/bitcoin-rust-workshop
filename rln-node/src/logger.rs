@@ -1,6 +1,7 @@
 use lightning::util::logger::Logger;
 use time::OffsetDateTime;
 
+#[derive(Clone, Debug)]
 pub struct RLNLogger;
 
 impl Logger for RLNLogger {
