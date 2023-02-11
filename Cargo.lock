@@ -230,6 +230,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "lightning-net-tokio"
+version = "0.0.113"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2e94b019ffcbd423c67bc8e65093d46cf5c00ff696b4b633936fce6e4d0cb845"
+dependencies = [
+ "bitcoin",
+ "lightning",
+ "tokio",
+]
+
+[[package]]
 name = "lightning-persister"
 version = "0.0.113"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -249,6 +260,7 @@ dependencies = [
  "bitcoincore-rpc",
  "lightning",
  "lightning-block-sync",
+ "lightning-net-tokio",
  "lightning-persister",
  "time",
  "tokio",
