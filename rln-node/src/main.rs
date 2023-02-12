@@ -15,6 +15,7 @@ use lightning::routing::router::DefaultRouter;
 use lightning::routing::scoring::{ProbabilisticScorer, ProbabilisticScoringParameters};
 use lightning::util::config::UserConfig;
 use lightning::util::events::Event;
+use lightning_background_processor::{BackgroundProcessor, GossipSync};
 use lightning_block_sync::init::synchronize_listeners;
 use lightning_block_sync::{poll, SpvClient, UnboundedCache};
 use lightning_invoice::payment::{self, InvoicePayer};
@@ -151,10 +152,11 @@ async fn main() {
     let listener = tokio::net::TcpListener::bind(format!("0.0.0.0:{}", listen_port))
         .await
         .unwrap();
+    let peer_manager_connection = peer_manager.clone();
     tokio::spawn(async move {
         loop {
-            let peer_manager_connection = peer_manager.clone();
             let tcp_stream = listener.accept().await.unwrap().0;
+            let peer_manager_connection = peer_manager_connection.clone();
             tokio::spawn(async move {
                 lightning_net_tokio::setup_inbound(
                     peer_manager_connection,
@@ -167,9 +169,11 @@ async fn main() {
 
     // Keeping LKD up to date
     let channel_manager_spv = channel_manager.clone();
+    let chain_monitor_spv = chain_monitor.clone();
+
     tokio::spawn(async move {
         let chain_poller = poll::ChainPoller::new(bitcoind_client.clone(), Network::Regtest);
-        let chain_listener = (chain_monitor.clone(), channel_manager_spv);
+        let chain_listener = (chain_monitor_spv, channel_manager_spv);
         let mut spv_client = SpvClient::new(
             chain_tip.unwrap(),
             chain_poller,
@@ -202,11 +206,26 @@ async fn main() {
         keys_manager.get_secure_random_bytes(),
         scorer.clone(),
     );
-    let _invoice_payer = Arc::new(InvoicePayer::new(
+    let invoice_payer = Arc::new(InvoicePayer::new(
         channel_manager.clone(),
         router,
         logger.clone(),
         event_handler,
         payment::Retry::Timeout(Duration::from_secs(5)),
     ));
+
+    // Persister
+    let persister = Arc::new(FilesystemPersister::new(ln_dir.to_owned()));
+
+    // Background process
+    let _bg_process = BackgroundProcessor::start(
+        persister,
+        invoice_payer.clone(),
+        chain_monitor.clone(),
+        channel_manager.clone(),
+        GossipSync::p2p(gossip_sync.clone()),
+        peer_manager.clone(),
+        logger.clone(),
+        Some(scorer.clone()),
+    );
 }
