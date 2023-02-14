@@ -1,5 +1,9 @@
-use lightning::util::events::Event;
+use lightning::util::events::{Event, EventHandler};
 
-pub fn handle_ldk_event(event: Event) {
-    println!("{:#?}", event);
+pub struct RLNEventHandler;
+
+impl EventHandler for RLNEventHandler {
+    fn handle_event(&self, event: Event) {
+        println!("{:#?}", event);
+    }
 }
