@@ -15,3 +15,4 @@ bitcoin_basics = { path = "basics"}
 miniscript_workshop = { path = "miniscript_workshop"}
 ln_workshop = { path = "ln"}
 ln_node = { path = "rln-node"}
+rln_rpc = { path = "rln-rpc"}

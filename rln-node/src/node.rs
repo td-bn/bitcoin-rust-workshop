@@ -229,7 +229,7 @@ pub async fn start_node(ln_dir: &str) -> Node
     ));
 
     // Background process
-    let _bg_process = BackgroundProcessor::start(
+    let bg_process = BackgroundProcessor::start(
         persister,
         invoice_payer.clone(),
         chain_monitor.clone(),
@@ -249,6 +249,6 @@ pub async fn start_node(ln_dir: &str) -> Node
         onion_messenger: onion_messenger.clone(),
         ln_dir: ln_dir.to_owned(),
         logger: logger.clone(),
-        bg_processor: _bg_process,
+        bg_processor: bg_process,
     }
 }

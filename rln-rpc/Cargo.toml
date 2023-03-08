@@ -1,0 +1,30 @@
+[package]
+name = "rln_rpc"
+version = "0.0.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+name = "rlnrpc"
+path = "src/lib.rs"
+
+[dependencies]
+lightning = "0.0.113"
+time = {version = "0.3", features = ["formatting"]}
+bitcoincore-rpc = {version = "0.16.0"}
+lightning-persister = {version = "0.0.113"}
+lightning-block-sync = {version = "0.0.113"}
+lightning-net-tokio = { version = "0.0.113" }
+lightning-invoice = { version = "0.21" }
+lightning-background-processor = { version = "0.0.113" }
+
+anyhow = "1"
+jsonrpsee = { version = "0.16", features = ["server"] }
+
+
+
+tokio = { version = "1", features = [ "io-util", "macros", "rt", "rt-multi-thread", "sync", "net", "time" ] }
+
+bitcoin_basics = { path = "../basics" }
+
